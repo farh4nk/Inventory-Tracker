@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { firestore } from '@/firebase';
 import { Box, Typography, Modal, Stack, TextField, Button } from "@mui/material";
 import { collection, setDoc, query, doc, getDoc, getDocs, deleteDoc } from "firebase/firestore";
-
+let total = 0;
 export default function Home() {
   const [inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState('');
   
+
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
     const docs = await getDocs(snapshot);
@@ -24,6 +25,7 @@ export default function Home() {
   }
 
   const removeItem = async (item) => {
+    total--;
     const docRef = doc(collection(firestore, 'inventory'), item);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -39,6 +41,7 @@ export default function Home() {
   }
 
   const addItem = async (item) => {
+    total++;
     const docRef = doc(collection(firestore, 'inventory'), item);
     const docSnap = await getDoc(docRef);
 
@@ -168,6 +171,10 @@ export default function Home() {
                     ))}
                 </Stack>
               </Box>
+              <Box>
+                <Typography variant="h4">Total Items: {total}</Typography>
+              </Box>
             </Box>
+            
    )
   }
